@@ -1,26 +1,26 @@
 <template>
   <div class="store-page">
     <div class="page-header">
-      <h1>🏪 Store</h1>
-      <p>Store information from Keenon</p>
+      <h1>🏪 {{ t('store.title') }}</h1>
+      <p>{{ t('store.subtitle', 'Store information from Keenon') }}</p>
       <button @click="loadStoreData" class="refresh-btn" :disabled="loading">
         <span class="icon">🔄</span>
-        <span>{{ loading ? 'Refreshing...' : 'Refresh' }}</span>
+        <span>{{ loading ? t('common.loading') : t('store.refresh', 'Refresh') }}</span>
       </button>
     </div>
 
     <!-- Loading State -->
     <div v-if="loading && !storeData" class="loading-container">
       <div class="spinner"></div>
-      <p>Loading store information...</p>
+      <p>{{ t('common.loading') }}...</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h3>Error Loading Data</h3>
+      <h3>{{ t('common.error') }}</h3>
       <p>{{ error }}</p>
-      <button @click="loadStoreData" class="btn-retry">Retry</button>
+      <button @click="loadStoreData" class="btn-retry">{{ t('robot.retry') }}</button>
     </div>
 
     <!-- Store Data -->
@@ -29,22 +29,22 @@
         <!-- Main Store Info Card -->
         <div class="card main-card">
           <div class="card-header">
-            <h2>🏪 Store Information</h2>
+            <h2>🏪 {{ t('store.storeInfo', 'Store Information') }}</h2>
           </div>
           <div class="card-body">
             <div class="store-name">
-              {{ storeData.storeName || 'No name' }}
+              {{ storeData.storeName || t('store.noName', 'No name') }}
             </div>
             <div class="store-id">
-              Store ID: {{ storeData.storeId }}
+              {{ t('store.storeId') }}: {{ storeData.storeId }}
             </div>
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">Customer Name:</span>
+                <span class="info-label">{{ t('store.customerName', 'Customer Name') }}:</span>
                 <span class="info-value">{{ storeData.customerName || 'N/A' }}</span>
               </div>
               <div class="info-item">
-                <span class="info-label">Address:</span>
+                <span class="info-label">{{ t('store.address') }}:</span>
                 <span class="info-value">{{ storeData.address || 'N/A' }}</span>
               </div>
             </div>
@@ -54,19 +54,19 @@
         <!-- Location Card -->
         <div class="card">
           <div class="card-header">
-            <h2>📍 Location Details</h2>
+            <h2>📍 {{ t('store.locationDetails', 'Location Details') }}</h2>
           </div>
           <div class="card-body">
             <div class="info-item">
-              <span class="info-label">Address:</span>
+              <span class="info-label">{{ t('store.address') }}:</span>
               <span class="info-value">{{ storeData.address || 'N/A' }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Country:</span>
+              <span class="info-label">{{ t('store.country', 'Country') }}:</span>
               <span class="info-value">{{ storeData.country || 'N/A' }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Province:</span>
+              <span class="info-label">{{ t('store.province', 'Province') }}:</span>
               <span class="info-value">{{ storeData.province || 'N/A' }}</span>
             </div>
           </div>
@@ -75,19 +75,19 @@
         <!-- Brand Info Card -->
         <div class="card">
           <div class="card-header">
-            <h2>🏷️ Brand Information</h2>
+            <h2>🏷️ {{ t('store.brandInfo', 'Brand Information') }}</h2>
           </div>
           <div class="card-body">
             <div class="info-item">
-              <span class="info-label">Brand Name:</span>
+              <span class="info-label">{{ t('store.brandName', 'Brand Name') }}:</span>
               <span class="info-value">{{ storeData.brandName || 'N/A' }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Third Shop ID:</span>
+              <span class="info-label">{{ t('store.thirdShopId', 'Third Shop ID') }}:</span>
               <span class="info-value">{{ storeData.thirdShopId || 'N/A' }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Third Shop Name:</span>
+              <span class="info-label">{{ t('store.thirdShopName', 'Third Shop Name') }}:</span>
               <span class="info-value">{{ storeData.thirdShopName || 'N/A' }}</span>
             </div>
           </div>
@@ -96,16 +96,16 @@
         <!-- ID Information Card -->
         <div class="card">
           <div class="card-header">
-            <h2>🔑 Identifiers</h2>
+            <h2>🔑 {{ t('store.identifiers', 'Identifiers') }}</h2>
           </div>
           <div class="card-body">
             <div class="id-display">
               <div class="id-item">
-                <span class="id-label">Store ID</span>
+                <span class="id-label">{{ t('store.storeId') }}</span>
                 <span class="id-value primary">{{ storeData.storeId }}</span>
               </div>
               <div class="id-item" v-if="storeData.thirdShopId">
-                <span class="id-label">Third Shop ID</span>
+                <span class="id-label">{{ t('store.thirdShopId') }}</span>
                 <span class="id-value">{{ storeData.thirdShopId }}</span>
               </div>
             </div>
@@ -115,23 +115,26 @@
 
       <!-- Last Update -->
       <div class="last-update">
-        Last update: {{ lastUpdateTime }}
+        {{ t('robot.lastUpdate') }}: {{ lastUpdateTime }}
       </div>
     </div>
 
     <!-- No Data State -->
     <div v-else class="no-data-container">
       <div class="no-data-icon">🏪</div>
-      <h3>No Store Data</h3>
-      <p>No store information found at this time</p>
-      <button @click="loadStoreData" class="btn-retry">Load Data</button>
+      <h3>{{ t('store.noData', 'No Store Data') }}</h3>
+      <p>{{ t('store.noDataMessage', 'No store information found at this time') }}</p>
+      <button @click="loadStoreData" class="btn-retry">{{ t('robot.loadData') }}</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import apiClient from '../api/config'
+
+const { t } = useI18n()
 
 // Estado
 const storeData = ref(null)

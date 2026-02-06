@@ -2,20 +2,20 @@
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-content response-modal">
       <div class="modal-header">
-        <h2 class="modal-title">Response</h2>
+        <h2 class="modal-title">{{ t('endpoints.response', 'Response') }}</h2>
         <button class="close-btn" @click="$emit('close')">&times;</button>
       </div>
 
       <div v-if="response" class="response-content">
         <span :class="['response-code', statusCodeClass]">
-          Status: {{ response.status_code }}
+          {{ t('endpoints.status', 'Status') }}: {{ response.status_code }}
         </span>
         
         <h3 class="endpoint-info">
           {{ response.endpoint.method }} {{ response.endpoint.path }}
         </h3>
         
-        <h4>Response:</h4>
+        <h4>{{ t('endpoints.response') }}:</h4>
         <div class="response-body">
           {{ formattedResponse }}
         </div>
@@ -26,7 +26,9 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const props = defineProps({
   response: {
     type: Object,

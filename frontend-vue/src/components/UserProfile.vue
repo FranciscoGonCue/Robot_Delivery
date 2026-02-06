@@ -2,40 +2,40 @@
   <div class="profile-modal-overlay" @click="$emit('close')">
     <div class="profile-modal" @click.stop>
       <div class="profile-header">
-        <h2>My Profile</h2>
+        <h2>{{ t('profile.myProfile') }}</h2>
         <button class="close-btn" @click="$emit('close')">✕</button>
       </div>
       
       <div class="profile-content">
         <!-- User Info Section -->
         <div class="profile-section">
-          <h3>User Information</h3>
+          <h3>{{ t('profile.userInfo', 'User Information') }}</h3>
           <div class="info-row">
-            <label>Username:</label>
+            <label>{{ t('auth.username') }}:</label>
             <span class="value">{{ user?.username }}</span>
           </div>
           <div class="info-row">
-            <label>Email:</label>
+            <label>{{ t('auth.email') }}:</label>
             <div class="email-info">
-              <span class="value">{{ user?.email || '(no email)' }}</span>
-              <span v-if="user?.is_verified" class="badge verified">✓ Verified</span>
-              <span v-else-if="user?.email" class="badge unverified">⚠ Not Verified</span>
+              <span class="value">{{ user?.email || t('profile.noEmail', '(no email)') }}</span>
+              <span v-if="user?.is_verified" class="badge verified">✓ {{ t('profile.verified', 'Verified') }}</span>
+              <span v-else-if="user?.email" class="badge unverified">⚠ {{ t('profile.notVerified', 'Not Verified') }}</span>
             </div>
           </div>
         </div>
 
         <!-- Email Verification Section -->
         <div v-if="user?.email && !user?.is_verified" class="profile-section verification-section">
-          <h3>Email Verification</h3>
+          <h3>{{ t('auth.emailVerification') }}</h3>
           <p class="info-text">
-            Your email is not verified. Verify your email for better security.
+            {{ t('profile.verificationMessage', 'Your email is not verified. Verify your email for better security.') }}
           </p>
           <button 
             @click="handleRequestVerification" 
             class="btn btn-primary"
             :disabled="sendingVerification"
           >
-            {{ sendingVerification ? 'Sending...' : 'Send Verification Email' }}
+            {{ sendingVerification ? t('common.loading') : t('profile.sendVerification', 'Send Verification Email') }}
           </button>
           <div v-if="verificationMessage" class="success-message">
             {{ verificationMessage }}
@@ -47,22 +47,22 @@
 
         <!-- Update Email Section -->
         <div class="profile-section">
-          <h3>Update Email</h3>
+          <h3>{{ t('profile.updateEmail', 'Update Email') }}</h3>
           <form @submit.prevent="handleUpdateEmail">
             <div class="form-group">
-              <label for="new-email">New Email:</label>
+              <label for="new-email">{{ t('profile.newEmail', 'New Email') }}:</label>
               <input
                 id="new-email"
                 v-model="newEmail"
                 type="email"
-                placeholder="new@example.com"
+                :placeholder="t('auth.email')"
               />
               <small class="help-text">
-                If you change your email, you will need to verify it again
+                {{ t('profile.emailChangeWarning', 'If you change your email, you will need to verify it again') }}
               </small>
             </div>
             <button type="submit" class="btn btn-secondary" :disabled="updatingEmail || !newEmail">
-              {{ updatingEmail ? 'Updating...' : 'Update Email' }}
+              {{ updatingEmail ? t('common.loading') : t('profile.updateEmailButton', 'Update Email') }}
             </button>
           </form>
           <div v-if="emailUpdateMessage" class="success-message">
@@ -75,40 +75,40 @@
 
         <!-- Change Password Section -->
         <div class="profile-section">
-          <h3>Change Password</h3>
+          <h3>{{ t('profile.changePassword') }}</h3>
           <form @submit.prevent="handleChangePassword">
             <div class="form-group">
-              <label for="current-password">Current Password:</label>
+              <label for="current-password">{{ t('profile.currentPassword') }}:</label>
               <input
                 id="current-password"
                 v-model="passwordForm.current"
                 type="password"
-                placeholder="Current password"
+                :placeholder="t('profile.currentPassword')"
                 required
               />
             </div>
             <div class="form-group">
-              <label for="new-password">New Password:</label>
+              <label for="new-password">{{ t('profile.newPassword') }}:</label>
               <input
                 id="new-password"
                 v-model="passwordForm.new"
                 type="password"
-                placeholder="New password (min. 6 characters)"
+                :placeholder="t('profile.newPassword')"
                 required
               />
             </div>
             <div class="form-group">
-              <label for="confirm-password">Confirm New Password:</label>
+              <label for="confirm-password">{{ t('profile.confirmPassword') }}:</label>
               <input
                 id="confirm-password"
                 v-model="passwordForm.confirm"
                 type="password"
-                placeholder="Confirm password"
+                :placeholder="t('profile.confirmPassword')"
                 required
               />
             </div>
             <button type="submit" class="btn btn-secondary" :disabled="changingPassword">
-              {{ changingPassword ? 'Changing...' : 'Change Password' }}
+              {{ changingPassword ? t('common.loading') : t('profile.changePasswordButton') }}
             </button>
           </form>
           <div v-if="passwordMessage" class="success-message">
@@ -125,8 +125,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import apiClient from '../api/config'
 
+const { t } = useI18n()
 const props = defineProps({
   user: {
     type: Object,

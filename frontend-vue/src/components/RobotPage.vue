@@ -1,26 +1,26 @@
 <template>
   <div class="robot-page">
     <div class="page-header">
-      <h1>🤖 Robot Control</h1>
-      <p>Real-time information from Keenon robot</p>
+      <h1>🤖 {{ t('robot.title') }}</h1>
+      <p>{{ t('robot.subtitle', 'Real-time information from Keenon robot') }}</p>
       <button @click="loadRobotData" class="refresh-btn" :disabled="loading">
         <span class="icon">🔄</span>
-        <span>{{ loading ? 'Refreshing...' : 'Refresh' }}</span>
+        <span>{{ loading ? t('common.loading') : t('robot.refreshToken').replace('Token', '') }}</span>
       </button>
     </div>
 
     <!-- Loading State -->
     <div v-if="loading && !robotData" class="loading-container">
       <div class="spinner"></div>
-      <p>Loading robot information...</p>
+      <p>{{ t('common.loading') }}...</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <div class="error-icon">⚠️</div>
-      <h3>Error Loading Data</h3>
+      <h3>{{ t('common.error') }}</h3>
       <p>{{ error }}</p>
-      <button @click="loadRobotData" class="btn-retry">Retry</button>
+      <button @click="loadRobotData" class="btn-retry">{{ t('robot.retry', 'Retry') }}</button>
     </div>
 
     <!-- Robot Data -->
@@ -29,26 +29,26 @@
         <!-- Status Card -->
         <div class="card status-card">
           <div class="card-header">
-            <h2>⚡ Robot Status</h2>
+            <h2>⚡ {{ t('robot.status') }}</h2>
             <span class="status-badge" :class="{ online: robotData.onlineStatus === 1 }">
-              {{ robotData.onlineStatus === 1 ? '🟢 Online' : '🔴 Offline' }}
+              {{ robotData.onlineStatus === 1 ? `🟢 ${t('robot.online')}` : `🔴 ${t('robot.offline')}` }}
             </span>
           </div>
           <div class="card-body">
             <div class="info-item">
-              <span class="info-label">Robot ID:</span>
+              <span class="info-label">{{ t('robot.robotId', 'Robot ID') }}:</span>
               <span class="info-value">{{ robotData.robotId }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Robot Code:</span>
+              <span class="info-label">{{ t('robot.robotCode', 'Robot Code') }}:</span>
               <span class="info-value code">{{ robotData.robotCode }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Name:</span>
-              <span class="info-value">{{ robotData.robotName || 'No name' }}</span>
+              <span class="info-label">{{ t('robot.name', 'Name') }}:</span>
+              <span class="info-value">{{ robotData.robotName || t('robot.noName', 'No name') }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Model:</span>
+              <span class="info-label">{{ t('robot.model', 'Model') }}:</span>
               <span class="info-value">{{ robotData.robotModel || 'Keenon' }}</span>
             </div>
           </div>
@@ -57,7 +57,7 @@
         <!-- Battery Card -->
         <div class="card">
           <div class="card-header">
-            <h2>🔋 Battery</h2>
+            <h2>🔋 {{ t('robot.battery') }}</h2>
           </div>
           <div class="card-body">
             <div class="battery-display">
@@ -79,13 +79,13 @@
         <!-- Location Card -->
         <div class="card">
           <div class="card-header">
-            <h2>📍 Location</h2>
+            <h2>📍 {{ t('robot.location') }}</h2>
           </div>
           <div class="card-body">
             <div class="location-info">
               <div class="location-icon">🗺️</div>
               <div class="location-text">
-                {{ robotData.city || 'Location not available' }}
+                {{ robotData.city || t('robot.noLocation', 'Location not available') }}
               </div>
             </div>
           </div>
@@ -94,25 +94,25 @@
         <!-- Technical Info Card -->
         <div class="card">
           <div class="card-header">
-            <h2>⚙️ Technical Information</h2>
+            <h2>⚙️ {{ t('robot.technicalInfo', 'Technical Information') }}</h2>
           </div>
           <div class="card-body">
             <div class="info-item">
-              <span class="info-label">Manufacturing Code:</span>
+              <span class="info-label">{{ t('robot.mftCode', 'Manufacturing Code') }}:</span>
               <span class="info-value">{{ robotData.mftCode }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">App Version:</span>
+              <span class="info-label">{{ t('robot.appVersion', 'App Version') }}:</span>
               <span class="info-value">{{ robotData.appVersion }}</span>
             </div>
             <div class="info-item">
-              <span class="info-label">Connection Type:</span>
+              <span class="info-label">{{ t('robot.connectionType', 'Connection Type') }}:</span>
               <span class="info-value">
                 {{ getOnlineType(robotData.onlineType) }}
               </span>
             </div>
             <div class="info-item">
-              <span class="info-label">Store ID:</span>
+              <span class="info-label">{{ t('store.storeId') }}:</span>
               <span class="info-value">C00001185</span>
             </div>
           </div>
@@ -121,23 +121,26 @@
 
       <!-- Last Update -->
       <div class="last-update">
-        Last update: {{ lastUpdateTime }}
+        {{ t('robot.lastUpdate', 'Last update') }}: {{ lastUpdateTime }}
       </div>
     </div>
 
     <!-- No Data State -->
     <div v-else class="no-data-container">
       <div class="no-data-icon">🤖</div>
-      <h3>No Robot Data</h3>
-      <p>No robot information found at this time</p>
-      <button @click="loadRobotData" class="btn-retry">Load Data</button>
+      <h3>{{ t('robot.noData', 'No Robot Data') }}</h3>
+      <p>{{ t('robot.noDataMessage', 'No robot information found at this time') }}</p>
+      <button @click="loadRobotData" class="btn-retry">{{ t('robot.loadData', 'Load Data') }}</button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import apiClient from '../api/config'
+
+const { t } = useI18n()
 
 // Estado
 const robotData = ref(null)
@@ -180,11 +183,11 @@ const getBatteryClass = (power) => {
 
 // Obtener estado de batería
 const getBatteryStatus = (power) => {
-  if (power > 80) return 'Excellent'
-  if (power > 60) return 'Good'
-  if (power > 30) return 'Medium'
-  if (power > 15) return 'Low'
-  return 'Critical'
+  if (power > 80) return t('robot.batteryExcellent', 'Excellent')
+  if (power > 60) return t('robot.batteryGood', 'Good')
+  if (power > 30) return t('robot.batteryMedium', 'Medium')
+  if (power > 15) return t('robot.batteryLow', 'Low')
+  return t('robot.batteryCritical', 'Critical')
 }
 
 // Obtener tipo de conexión

@@ -3,52 +3,52 @@
     <div class="verification-box">
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
-        <h2>Verificando tu email...</h2>
-        <p>Por favor espera un momento</p>
+        <h2>{{ t('auth.verifying', 'Verifying your email...') }}</h2>
+        <p>{{ t('common.pleaseWait', 'Please wait a moment') }}</p>
       </div>
       
       <div v-else-if="success" class="success-state">
         <div class="icon success-icon">✓</div>
-        <h2>¡Email Verificado!</h2>
+        <h2>{{ t('auth.emailVerified', 'Email Verified!') }}</h2>
         <p class="message">{{ message }}</p>
-        <p class="sub-message">Ya puedes iniciar sesión con tu cuenta</p>
+        <p class="sub-message">{{ t('auth.canLogin', 'You can now log in with your account') }}</p>
         <button @click="goToLogin" class="btn btn-primary">
-          Ir a Login
+          {{ t('auth.goToLogin', 'Go to Login') }}
         </button>
       </div>
       
       <div v-else-if="error" class="error-state">
         <div class="icon error-icon">✕</div>
-        <h2>Error en la Verificación</h2>
+        <h2>{{ t('auth.verificationError', 'Verification Error') }}</h2>
         <p class="message error">{{ message }}</p>
         
         <div v-if="expired" class="expired-section">
-          <p>El enlace de verificación ha expirado.</p>
-          <p>¿Deseas recibir un nuevo enlace?</p>
+          <p>{{ t('auth.linkExpired', 'The verification link has expired.') }}</p>
+          <p>{{ t('auth.wantNewLink', 'Do you want to receive a new link?') }}</p>
           <button @click="showResendForm = true" class="btn btn-primary">
-            Reenviar Email de Verificación
+            {{ t('auth.resendVerification', 'Resend Verification Email') }}
           </button>
         </div>
         
         <div v-if="showResendForm" class="resend-form">
-          <h3>Reenviar Verificación</h3>
+          <h3>{{ t('auth.resendVerification') }}</h3>
           <form @submit.prevent="handleResendVerification">
             <div class="form-group">
-              <label for="email">Email o Username</label>
+              <label for="email">{{ t('auth.emailOrUsername', 'Email or Username') }}</label>
               <input
                 id="email"
                 v-model="resendEmail"
                 type="text"
-                placeholder="Tu email o username"
+                :placeholder="t('auth.emailOrUsername')"
                 required
               />
             </div>
             <button type="submit" class="btn btn-primary" :disabled="resending">
-              {{ resending ? 'Enviando...' : 'Reenviar Email' }}
+              {{ resending ? t('common.loading') : t('auth.resendEmail', 'Resend Email') }}
             </button>
           </form>
           <div v-if="resendSuccess" class="success-message">
-            Email de verificación enviado exitosamente
+            {{ t('auth.verificationSent', 'Verification email sent successfully') }}
           </div>
           <div v-if="resendError" class="error-message">
             {{ resendError }}
@@ -56,16 +56,16 @@
         </div>
         
         <button @click="goToLogin" class="btn btn-secondary" style="margin-top: 20px;">
-          Volver a Login
+          {{ t('auth.backToLogin', 'Back to Login') }}
         </button>
       </div>
       
       <div v-else-if="alreadyVerified" class="info-state">
         <div class="icon info-icon">ℹ</div>
-        <h2>Email Ya Verificado</h2>
-        <p class="message">Tu cuenta ya ha sido verificada anteriormente</p>
+        <h2>{{ t('auth.alreadyVerified', 'Email Already Verified') }}</h2>
+        <p class="message">{{ t('auth.alreadyVerifiedMessage', 'Your account has already been verified') }}</p>
         <button @click="goToLogin" class="btn btn-primary">
-          Ir a Login
+          {{ t('auth.goToLogin') }}
         </button>
       </div>
     </div>
@@ -74,8 +74,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { verifyEmail, resendVerificationEmail } from '../api/auth'
 
+const { t } = useI18n()
 const loading = ref(true)
 const success = ref(false)
 const error = ref(false)
