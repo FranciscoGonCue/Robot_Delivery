@@ -1,0 +1,28 @@
+<template>
+  <button class="create-endpoint-btn" @click="$emit('click')">
+    ➕ Create Endpoint
+  </button>
+</template>
+
+<script setup>
+defineEmits(['click'])
+</script>
+
+<style scoped>
+.create-endpoint-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.create-endpoint-btn:hover {
+  background-color: #0056b3;
+}
+</style>
