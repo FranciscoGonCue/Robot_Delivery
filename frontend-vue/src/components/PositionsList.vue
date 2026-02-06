@@ -1,13 +1,13 @@
 <template>
   <div class="positions-container">
-    <h2 class="title">Positions</h2>
+    <h2 class="title">{{ t('positions.title') }}</h2>
     
-    <div v-if="loading" class="loading">Loading positions...</div>
+    <div v-if="loading" class="loading">{{ t('positions.loadingPositions') }}</div>
     
     <div v-else-if="error" class="error">{{ error }}</div>
     
     <div v-else-if="positions.length === 0" class="empty">
-      No positions available
+      {{ t('positions.noPositions') }}
     </div>
     
     <div v-else class="positions-list">
@@ -25,7 +25,7 @@
           :disabled="sendingRobot[position.pointid]"
           @click="sendRobot(position.pointid)"
         >
-          {{ sendingRobot[position.pointid] ? 'Sending...' : 'GO' }}
+          {{ sendingRobot[position.pointid] ? t('positions.sending') : t('positions.goButton') }}
         </button>
       </div>
     </div>
@@ -34,9 +34,11 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { targetsAPI, robotAPI } from '../api/services'
 import { useNotifications } from '../composables/useNotifications'
 
+const { t } = useI18n()
 const emit = defineEmits(['send-robot'])
 const { success, error: notifyError } = useNotifications()
 
@@ -62,10 +64,10 @@ const loadPositions = async () => {
       }))
       error.value = null
     } else {
-      error.value = response.data.error || 'Error loading positions'
+      error.value = response.data.error || t('positions.errorLoading')
     }
   } catch (err) {
-    error.value = 'Error loading positions'
+    error.value = t('positions.errorLoading')
     console.error(err)
   } finally {
     loading.value = false

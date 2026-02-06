@@ -4,15 +4,17 @@
     :disabled="loading"
     @click="refreshToken"
   >
-    {{ loading ? 'Refreshing...' : '🔄 Refresh Token' }}
+    {{ loading ? t('common.loading') : `🔄 ${t('robot.refreshToken')}` }}
   </button>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { tokenAPI } from '../api/services'
 import { useNotifications } from '../composables/useNotifications'
 
+const { t } = useI18n()
 const { success, error } = useNotifications()
 const loading = ref(false)
 
@@ -23,12 +25,12 @@ const refreshToken = async () => {
     const response = await tokenAPI.refresh()
     
     if (response.data.success) {
-      success('✓ Token refreshed successfully')
+      success(`✓ ${t('robot.tokenRefreshed')}`)
     } else {
-      error('✗ Error refreshing token')
+      error(`✗ ${t('robot.tokenError')}`)
     }
   } catch (err) {
-    error('✗ Connection error while refreshing token')
+    error(`✗ ${t('notifications.connectionError')}`)
     console.error(err)
   } finally {
     loading.value = false

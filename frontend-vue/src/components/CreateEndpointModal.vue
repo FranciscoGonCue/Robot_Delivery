@@ -2,24 +2,24 @@
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title">{{ isEditing ? 'Edit Endpoint' : 'Create New Endpoint' }}</h2>
+        <h2 class="modal-title">{{ isEditing ? t('endpoints.editEndpoint') : t('endpoints.createEndpoint') }}</h2>
         <button class="close-btn" @click="$emit('close')">&times;</button>
       </div>
 
       <form @submit.prevent="saveEndpoint">
         <div class="form-group">
-          <label class="form-label">Endpoint Name:</label>
+          <label class="form-label">{{ t('endpoints.endpointName') }}:</label>
           <input 
             v-model="form.name"
             type="text"
             class="form-input"
-            placeholder="e.g., Get Robot Status"
+            :placeholder="t('endpoints.endpointName')"
             required
           />
         </div>
 
         <div class="form-group">
-          <label class="form-label">Method & Path:</label>
+          <label class="form-label">{{ t('endpoints.method') }} & {{ t('endpoints.path') }}:</label>
           <div class="method-input-group">
             <select v-model="form.method" class="form-select">
               <option value="GET">GET</option>
@@ -35,13 +35,10 @@
               required
             />
           </div>
-          <small style="color: #666;">
-            Base URL (https://es.robotkeenon.com) will be added automatically
-          </small>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Params (JSON):</label>
+          <label class="form-label">{{ t('endpoints.params') }} (JSON):</label>
           <textarea 
             v-model="form.params"
             class="form-textarea"
@@ -50,7 +47,7 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Body (JSON):</label>
+          <label class="form-label">{{ t('endpoints.body') }} (JSON):</label>
           <textarea 
             v-model="form.body"
             class="form-textarea"
@@ -59,7 +56,7 @@
         </div>
 
         <button type="submit" class="submit-btn" :disabled="loading">
-          {{ loading ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Endpoint' : 'Create Endpoint') }}
+          {{ loading ? t('common.loading') : (isEditing ? t('endpoints.updateSuccess') : t('endpoints.createSuccess')) }}
         </button>
       </form>
     </div>
@@ -68,9 +65,11 @@
 
 <script setup>
 import { reactive, ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { endpointsAPI } from '../api/services'
 import { useNotifications } from '../composables/useNotifications'
 
+const { t } = useI18n()
 const props = defineProps({
   endpoint: {
     type: Object,

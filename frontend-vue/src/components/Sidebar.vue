@@ -5,6 +5,11 @@
       <h2>Robot Control</h2>
     </div>
 
+    <!-- Language Switcher -->
+    <div class="language-section">
+      <LanguageSwitcher />
+    </div>
+
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
       <button
@@ -13,7 +18,7 @@
         @click="$emit('navigate', 'dashboard')"
       >
         <span class="icon">📊</span>
-        <span>Dashboard</span>
+        <span>{{ t('dashboard.title') }}</span>
       </button>
 
       <button
@@ -22,7 +27,7 @@
         @click="$emit('navigate', 'store')"
       >
         <span class="icon">🏪</span>
-        <span>Store</span>
+        <span>{{ t('store.title') }}</span>
       </button>
 
       <button
@@ -31,7 +36,7 @@
         @click="$emit('navigate', 'robot')"
       >
         <span class="icon">🤖</span>
-        <span>Robot</span>
+        <span>{{ t('robot.title') }}</span>
       </button>
     </nav>
 
@@ -52,18 +57,23 @@
 
       <button class="sidebar-btn profile-btn" @click="$emit('open-profile')">
         <span class="icon">👤</span>
-        <span>My Profile</span>
+        <span>{{ t('profile.myProfile') }}</span>
       </button>
 
       <button class="sidebar-btn logout-btn" @click="$emit('logout')">
         <span class="icon">🚪</span>
-        <span>Logout</span>
+        <span>{{ t('common.logout') }}</span>
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+import LanguageSwitcher from './LanguageSwitcher.vue'
+
+const { t } = useI18n()
+
 defineProps({
   user: {
     type: Object,
@@ -105,6 +115,13 @@ defineEmits(['navigate', 'open-profile', 'logout'])
   font-weight: 700;
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.language-section {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar-nav {

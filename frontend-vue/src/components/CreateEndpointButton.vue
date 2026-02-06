@@ -1,10 +1,13 @@
 <template>
   <button class="create-endpoint-btn" @click="$emit('click')">
-    ➕ Create Endpoint
+    ➕ {{ t('endpoints.createEndpoint') }}
   </button>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 defineEmits(['click'])
 </script>
 

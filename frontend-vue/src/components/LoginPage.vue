@@ -4,26 +4,26 @@
       <h1 class="title">Robot Delivery Control</h1>
       
       <div v-if="!showRegister" class="form-container">
-        <h2>Login</h2>
+        <h2>{{ t('auth.login') }}</h2>
         <form @submit.prevent="handleLogin">
           <div class="form-group">
-            <label for="username">Username</label>
+            <label for="username">{{ t('auth.username') }}</label>
             <input
               id="username"
               v-model="loginForm.username"
               type="text"
-              placeholder="Enter username"
+              :placeholder="t('auth.username')"
               required
             />
           </div>
           
           <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">{{ t('auth.password') }}</label>
             <input
               id="password"
               v-model="loginForm.password"
               type="password"
-              placeholder="Enter password"
+              :placeholder="t('auth.password')"
               required
             />
           </div>
@@ -33,48 +33,47 @@
           </div>
           
           <button type="submit" class="btn btn-primary" :disabled="loading">
-            {{ loading ? 'Logging in...' : 'Login' }}
+            {{ loading ? t('common.loading') : t('auth.loginButton') }}
           </button>
         </form>
         
         <div class="toggle-form">
-          <p>Don't have an account?</p>
-          <button @click="toggleForm" class="btn btn-link">Register</button>
+          <p>{{ t('auth.noAccount') }}</p>
+          <button @click="toggleForm" class="btn btn-link">{{ t('auth.register') }}</button>
         </div>
       </div>
       
       <div v-else class="form-container">
-        <h2>Register</h2>
+        <h2>{{ t('auth.register') }}</h2>
         <form @submit.prevent="handleRegister">
           <div class="form-group">
-            <label for="reg-username">Username</label>
+            <label for="reg-username">{{ t('auth.username') }}</label>
             <input
               id="reg-username"
               v-model="registerForm.username"
               type="text"
-              placeholder="Choose a username"
+              :placeholder="t('auth.username')"
               required
             />
           </div>
           
           <div class="form-group">
-            <label for="reg-email">Email (opcional)</label>
+            <label for="reg-email">{{ t('auth.email') }}</label>
             <input
               id="reg-email"
               v-model="registerForm.email"
               type="email"
-              placeholder="Enter email"
+              :placeholder="t('auth.email')"
             />
-            <small class="help-text">Recomendado para verificación y recuperación de cuenta</small>
           </div>
           
           <div class="form-group">
-            <label for="reg-password">Password</label>
+            <label for="reg-password">{{ t('auth.password') }}</label>
             <input
               id="reg-password"
               v-model="registerForm.password"
               type="password"
-              placeholder="Choose a password"
+              :placeholder="t('auth.password')"
               required
             />
           </div>
@@ -83,13 +82,13 @@
           <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
           
           <button type="submit" class="btn btn-primary" :disabled="loading">
-            {{ loading ? 'Registering...' : 'Register' }}
+            {{ loading ? t('common.loading') : t('auth.registerButton') }}
           </button>
         </form>
         
         <div class="toggle-form">
-          <p>Already have an account?</p>
-          <button @click="toggleForm" class="btn btn-link">Login</button>
+          <p>{{ t('auth.haveAccount') }}</p>
+          <button @click="toggleForm" class="btn btn-link">{{ t('auth.login') }}</button>
         </div>
       </div>
     </div>
@@ -98,8 +97,10 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 
+const { t } = useI18n()
 const emit = defineEmits(['login-success'])
 
 const { login, register } = useAuth()

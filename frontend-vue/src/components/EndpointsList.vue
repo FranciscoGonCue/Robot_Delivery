@@ -1,11 +1,11 @@
 <template>
   <div class="endpoints-container">
-    <h3 class="title">📡 Saved Endpoints</h3>
+    <h3 class="title">📡 {{ t('endpoints.title') }}</h3>
     
-    <div v-if="loading" class="loading">Loading...</div>
+    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
     
     <div v-else-if="endpoints.length === 0" class="no-endpoints">
-      No endpoints created yet
+      {{ t('endpoints.noEndpoints') }}
     </div>
     
     <div v-else class="endpoints-list">
@@ -24,13 +24,13 @@
             class="execute-btn"
             @click="$emit('execute', endpoint.id)"
           >
-            ▶ Execute
+            ▶ {{ t('endpoints.execute') }}
           </button>
           <button 
             class="edit-btn"
             @click="$emit('edit', endpoint)"
           >
-            ✏ Edit
+            ✏ {{ t('common.edit') }}
           </button>
         </div>
       </div>
@@ -40,8 +40,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { endpointsAPI } from '../api/services'
 
+const { t } = useI18n()
 defineEmits(['execute', 'edit'])
 
 const endpoints = ref([])
