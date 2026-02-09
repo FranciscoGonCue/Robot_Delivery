@@ -210,6 +210,14 @@ def verify_email(request):
                 'already_verified': True
             }, status=status.HTTP_200_OK)
         
+        # Check if token is available
+        if not email_verification.available:
+            return Response({
+                'error': 'Verification token has expired',
+                'message': 'This verification link is no longer available. Please request a new verification email.',
+                'expired': True
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
         # Check if token is still valid
         if not email_verification.is_token_valid():
             return Response({
@@ -221,6 +229,7 @@ def verify_email(request):
         # Verify the email
         email_verification.is_verified = True
         email_verification.verified_at = timezone.now()
+        email_verification.available = False  # Mark as unavailable after use
         email_verification.save()
         
         # Send confirmation email

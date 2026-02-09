@@ -49,12 +49,18 @@ export const targetsAPI = {
 
 // Robot API
 export const robotAPI = {
-  call: (uuid, pointId) => apiClient.post('/robot/call/', { uuid, pointId })
+  call: (uuid, pointId) => apiClient.post('/robot/call/', { uuid, pointId }),
+  getOrders: () => apiClient.get('/robot/orders/')
 }
 
 // Token API (Keenon API token, not JWT)
 export const tokenAPI = {
   refresh: () => apiClient.post('/token/refresh/')
+}
+
+// Tasks API
+export const tasksAPI = {
+  getAll: (storeId) => apiClient.get('/tasks/list/', { params: { storeId } })
 }
 
 // Endpoints API

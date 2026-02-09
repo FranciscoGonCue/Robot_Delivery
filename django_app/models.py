@@ -71,6 +71,8 @@ class EmailVerification(models.Model):
     verification_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     token_created_at = models.DateTimeField(auto_now_add=True)
     verified_at = models.DateTimeField(null=True, blank=True)
+    expiration_time = models.IntegerField(default=10, help_text='Token expiration time in minutes')
+    available = models.BooleanField(default=True, help_text='Token availability status')
     
     class Meta:
         db_table = 'email_verifications'
@@ -81,16 +83,29 @@ class EmailVerification(models.Model):
         return f"{self.user.username} - {'Verified' if self.is_verified else 'Pending'}"
     
     def is_token_valid(self):
-        """Check if token is still valid (expires after 24 hours)"""
+        """Check if token is still valid based on expiration_time"""
         if self.is_verified:
             return False
-        expiry_time = self.token_created_at + timedelta(hours=24)
-        return timezone.now() < expiry_time
+        if not self.available:
+            return False
+        expiry_time = self.token_created_at + timedelta(minutes=self.expiration_time)
+        is_valid = timezone.now() < expiry_time
+        # Update available status based on expiration
+        if not is_valid and self.available:
+            self.available = False
+            self.save(update_fields=['available'])
+        return is_valid
     
     def regenerate_token(self):
-        """Generate a new verification token"""
+        """Generate a new verification token (invalidates the old one first)"""
+        # Step 1: Invalidate the current token for security
+        self.available = False
+        self.save(update_fields=['available'])
+        
+        # Step 2: Generate new token and make it available
         self.verification_token = uuid.uuid4()
         self.token_created_at = timezone.now()
+        self.available = True
         self.save()
 
 
@@ -99,3 +114,21 @@ def create_email_verification(sender, instance, created, **kwargs):
     """Automatically create EmailVerification when a User is created"""
     if created:
         EmailVerification.objects.create(user=instance)
+
+
+class RobotOrder(models.Model):
+    """Model to store robot call history"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='robot_orders')
+    robot_uuid = models.CharField(max_length=255)
+    point_id = models.CharField(max_length=255)
+    point_name = models.CharField(max_length=255, blank=True, null=True)
+    status_code = models.IntegerField()
+    success = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'robot_orders'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.point_name or self.point_id} - {self.created_at}"

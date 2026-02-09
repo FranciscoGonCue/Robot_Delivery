@@ -24,6 +24,7 @@ urlpatterns = [
     # Protected endpoints (require authentication)
     path('targets/', views.get_target_list, name='target-list'),
     path('robot/call/', views.call_robot_task, name='robot-call'),
+    path('robot/orders/', views.get_robot_orders, name='robot-orders'),
     path('token/refresh/', views.refresh_token, name='refresh-token'),
     path('endpoints/', views.endpoint_list, name='endpoint-list'),
     path('endpoints/create/', views.endpoint_create, name='endpoint-create'),
@@ -35,4 +36,7 @@ urlpatterns = [
     
     # Store endpoints
     path('store/list/', views.get_store_list, name='store-list'),
+    
+    # Task endpoints
+    path('tasks/list/', views.get_task_list, name='task-list'),
 ]

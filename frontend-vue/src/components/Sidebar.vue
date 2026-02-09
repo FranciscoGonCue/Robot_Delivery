@@ -38,6 +38,15 @@
         <span class="icon">🤖</span>
         <span>{{ t('robot.title') }}</span>
       </button>
+
+      <button
+        class="nav-item"
+        :class="{ active: currentView === 'tasks' }"
+        @click="$emit('navigate', 'tasks')"
+      >
+        <span class="icon">📋</span>
+        <span>{{ t('tasks.title', 'Tasks') }}</span>
+      </button>
     </nav>
 
     <!-- User Section (Bottom) -->

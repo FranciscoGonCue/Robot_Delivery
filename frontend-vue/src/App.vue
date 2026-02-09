@@ -26,6 +26,9 @@
       
       <!-- Robot View -->
       <RobotPage v-else-if="currentView === 'robot'" />
+      
+      <!-- Tasks View -->
+      <TasksPage v-else-if="currentView === 'tasks'" />
     </div>
 
     <!-- Notifications -->
@@ -50,6 +53,7 @@ import Sidebar from './components/Sidebar.vue'
 import Dashboard from './components/Dashboard.vue'
 import StorePage from './components/StorePage.vue'
 import RobotPage from './components/RobotPage.vue'
+import TasksPage from './components/TasksPage.vue'
 import NotificationContainer from './components/NotificationContainer.vue'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'

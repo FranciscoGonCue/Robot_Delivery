@@ -1,11 +1,12 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .models import Endpoint, UserKeenonConfig
+from .models import Endpoint, UserKeenonConfig, RobotOrder
 import json
 import requests
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import Count
 
 KEENON_BASE_URL = 'https://es.robotkeenon.com'
 
@@ -118,6 +119,43 @@ def call_robot_task(request):
                 'error': 'Access token not found. Please refresh your token.'
             }, status=401)
         
+        # Obtener el nombre del punto desde los targets
+        point_name = None
+        scene_code = keenon_config.scene_code
+        target_url = f"{KEENON_BASE_URL}/api/open/scene/v1/target/list"
+        
+        try:
+            target_response = requests.get(
+                target_url,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {keenon_config.access_token}'
+                },
+                params={'sceneCode': scene_code},
+                timeout=10
+            )
+            
+            if target_response.status_code == 200:
+                target_data = target_response.json()
+                print(f"DEBUG - Target API Response: {target_data}")
+                targets = target_data.get('data', [])
+                # Convertir ambos a string para comparación robusta
+                point_id_str = str(point_id)
+                print(f"DEBUG - Buscando point_id: {point_id_str}")
+                for target in targets:
+                    print(f"DEBUG - Target: pointId={target.get('pointId')}, pointName={target.get('pointName')}, name={target.get('name')}")
+                    if str(target.get('pointId')) == point_id_str:
+                        point_name = target.get('pointName') or target.get('name')
+                        print(f"DEBUG - MATCH! point_name={point_name}")
+                        break
+                if not point_name:
+                    print(f"DEBUG - No se encontró el nombre para point_id {point_id_str}")
+        except Exception as e:
+            print(f"Error obteniendo nombre del punto: {e}")
+            import traceback
+            traceback.print_exc()
+            pass  # Si falla, continuamos sin el nombre
+        
         keenon_payload = {
             "uuid": uuid,
             "pointId": point_id,
@@ -141,6 +179,16 @@ def call_robot_task(request):
             
             is_success = response.status_code in [200, 201]
             status_code = response.status_code
+            
+            # Guardar la orden en el historial
+            RobotOrder.objects.create(
+                user=request.user,
+                robot_uuid=uuid,
+                point_id=point_id,
+                point_name=point_name or point_id,
+                status_code=status_code,
+                success=is_success
+            )
             
             status_messages = {
                 200: 'Éxito',
@@ -626,6 +674,117 @@ def get_store_list(request):
                 'details': str(e)
             }, status=200)
             
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_task_list(request):
+    """
+    Obtiene la lista de tasks/pedidos desde Keenon API
+    Endpoint: /api/open/data/v1/store/task/food/list
+    """
+    try:
+        try:
+            keenon_config = UserKeenonConfig.objects.get(user=request.user)
+        except UserKeenonConfig.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Keenon configuration not found. Please configure your Keenon API credentials.'
+            }, status=200)
+        
+        if not keenon_config.access_token:
+            return JsonResponse({
+                'success': False,
+                'error': 'Access token not found. Please refresh your token.'
+            }, status=200)
+        
+        store_id = request.GET.get('storeId', keenon_config.store_id)
+        
+        task_url = f"{KEENON_BASE_URL}/api/open/data/v1/store/task/food/list"
+        
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {keenon_config.access_token}'
+        }
+        
+        params = {
+            'storeId': store_id
+        }
+        
+        try:
+            response = requests.get(
+                task_url,
+                headers=headers,
+                params=params,
+                timeout=30
+            )
+            
+            if response.status_code == 200:
+                task_data = response.json()
+                data_obj = task_data.get('data', {})
+                
+                return JsonResponse({
+                    'success': True,
+                    'total': data_obj.get('total', 0),
+                    'data': data_obj.get('list', [])
+                }, status=200)
+            elif response.status_code == 401:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Token expired. Please refresh the Keenon token from Dashboard.',
+                    'details': response.text,
+                    'status_code': 401
+                }, status=200)
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Keenon API returned status {response.status_code}',
+                    'details': response.text
+                }, status=200)
+                
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({
+                'success': False,
+                'error': 'Connection error with Keenon API',
+                'details': str(e)
+            }, status=200)
+            
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_robot_orders(request):
+    """
+    Get robot order history for the current user
+    """
+    try:
+        orders = RobotOrder.objects.filter(user=request.user).values(
+            'id', 'robot_uuid', 'point_id', 'point_name', 'status_code', 'success', 'created_at'
+        )
+        
+        # Get most frequent point
+        most_frequent = RobotOrder.objects.filter(
+            user=request.user
+        ).values('point_id', 'point_name').annotate(
+            count=Count('point_id')
+        ).order_by('-count').first()
+        
+        return JsonResponse({
+            'success': True,
+            'orders': list(orders),
+            'most_frequent_point': most_frequent
+        }, status=200)
+        
     except Exception as e:
         return JsonResponse({
             'success': False,
