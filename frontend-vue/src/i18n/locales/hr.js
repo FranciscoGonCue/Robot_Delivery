@@ -232,5 +232,27 @@ export default {
     sceneCode: 'Kod Scene',
     saveConfig: 'Spremi Konfiguraciju',
     configSaved: 'Konfiguracija uspješno spremljena'
+  },
+  mapping: {
+    title: 'Mapiranje Robota',
+    subtitle: 'Konfigurirajte i pristupite sučelju za mapiranje robota',
+    ipLabel: 'IP Adresa Robota',
+    ipPlaceholder: 'npr: 192.168.1.100',
+    ipHelp: 'Unesite lokalnu IP adresu vašeg Keenon robota',
+    checkButton: 'Provjeri',
+    checking: 'Provjera...',
+    available: '✓ Robot dostupan u modu mapiranja',
+    unavailable: '✗ Nije moguće povezati se s robotom',
+    error: '⚠ Greška u povezivanju',
+    openButton: 'Otvori Sučelje za Mapiranje',
+    warningMessage: 'Morate staviti robot u mod mapiranja',
+    instructionsTitle: 'Kako koristiti ovu funkciju?',
+    instruction1: 'Provjerite da je robot uključen i spojen na istu mrežu',
+    instruction2: 'Unesite IP adresu robota u gornje polje',
+    instruction3: 'Kliknite "Provjeri" za provjeru veze',
+    instruction4: 'Ako je dostupno, kliknite zeleni gumb za otvaranje sučelja za mapiranje',
+    connectionSuccess: 'Uspješno povezano s robotom',
+    timeout: 'Vrijeme povezivanja s robotom isteklo',
+    opened: 'Sučelje za mapiranje otvoreno u novoj kartici'
   }
 }

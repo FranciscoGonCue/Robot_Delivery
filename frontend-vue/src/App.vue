@@ -29,6 +29,9 @@
       
       <!-- Tasks View -->
       <TasksPage v-else-if="currentView === 'tasks'" />
+      
+      <!-- Mapping View -->
+      <MappingPage v-else-if="currentView === 'mapping'" />
     </div>
 
     <!-- Notifications -->
@@ -54,6 +57,7 @@ import Dashboard from './components/Dashboard.vue'
 import StorePage from './components/StorePage.vue'
 import RobotPage from './components/RobotPage.vue'
 import TasksPage from './components/TasksPage.vue'
+import MappingPage from './components/MappingPage.vue'
 import NotificationContainer from './components/NotificationContainer.vue'
 import { useNotifications } from './composables/useNotifications'
 import { useAuth } from './composables/useAuth'

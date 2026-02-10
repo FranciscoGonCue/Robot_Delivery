@@ -232,5 +232,27 @@ export default {
     sceneCode: 'Scene Code',
     saveConfig: 'Save Configuration',
     configSaved: 'Configuration saved successfully'
+  },
+  mapping: {
+    title: 'Robot Mapping',
+    subtitle: 'Configure and access the robot mapping interface',
+    ipLabel: 'Robot IP Address',
+    ipPlaceholder: 'e.g: 192.168.1.100',
+    ipHelp: 'Enter the local IP address of your Keenon robot',
+    checkButton: 'Check',
+    checking: 'Checking...',
+    available: '✓ Robot available in mapping mode',
+    unavailable: '✗ Cannot connect to robot',
+    error: '⚠ Connection error',
+    openButton: 'Open Mapping Interface',
+    warningMessage: 'You need to put the robot in mapping mode',
+    instructionsTitle: 'How to use this feature?',
+    instruction1: 'Make sure the robot is powered on and connected to the same network',
+    instruction2: 'Enter the robot IP address in the field above',
+    instruction3: 'Click "Check" to verify the connection',
+    instruction4: 'If available, click the green button to open the mapping interface',
+    connectionSuccess: 'Successfully connected to robot',
+    timeout: 'Connection timeout to robot',
+    opened: 'Mapping interface opened in new tab'
   }
 }

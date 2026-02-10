@@ -47,6 +47,15 @@
         <span class="icon">📋</span>
         <span>{{ t('tasks.title', 'Tasks') }}</span>
       </button>
+
+      <button
+        class="nav-item"
+        :class="{ active: currentView === 'mapping' }"
+        @click="$emit('navigate', 'mapping')"
+      >
+        <span class="icon">🗺️</span>
+        <span>{{ t('mapping.title') }}</span>
+      </button>
     </nav>
 
     <!-- User Section (Bottom) -->
